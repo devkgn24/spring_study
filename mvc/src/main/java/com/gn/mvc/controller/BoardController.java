@@ -12,11 +12,32 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.gn.mvc.dto.BoardDto;
 import com.gn.mvc.service.BoardService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class BoardController {
 	
-	@Autowired
-	BoardService service;
+	// 1. 필드 주입 -> 순환 참조
+//	@Autowired
+//	BoardService service;
+	
+	// 2. 메소드(Setter) 주입 -> 불변성 보장X
+//	private BoardService service;
+//	
+//	@Autowired
+//	public void setBoardService(BoardService service) {
+//		this.service = service;
+//	}
+	
+	// 3. 생성자 주입 + final
+	private final BoardService service;
+	
+//	@Autowired
+//	public BoardController(BoardService service) {
+//		this.service = service;
+//	}
+	
 	
 	@GetMapping("/board/create")
 	public String createBoardView() {

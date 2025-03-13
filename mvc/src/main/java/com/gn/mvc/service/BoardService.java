@@ -7,11 +7,16 @@ import com.gn.mvc.dto.BoardDto;
 import com.gn.mvc.entity.Board;
 import com.gn.mvc.repository.BoardRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class BoardService {
 	
-	@Autowired
-	BoardRepository repository;
+//	@Autowired
+//	BoardRepository repository;
+	
+	private final BoardRepository repository;
 	
 	public BoardDto createBoard(BoardDto dto) {
 		// 1. 매개변수 dto -> entity
