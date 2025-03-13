@@ -6,8 +6,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <title>게시판</title>
 </head>
 <body>
-	<th:block th:replace="~{include/header :: headerLayout}"></th:block>
-	<th:block th:replace="~{include/nav :: navLayout}"></th:block>
+	<th:block th:replace="~{include/header :: headerLayout}">
+	</th:block>
+	<th:block th:replace="~{include/nav :: navLayout}">
+	</th:block>
 	<div layout:fragment="content"></div>
 </body>
 </html>
