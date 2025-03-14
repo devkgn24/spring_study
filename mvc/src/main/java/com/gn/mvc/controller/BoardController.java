@@ -3,7 +3,6 @@ package com.gn.mvc.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,10 +12,14 @@ import com.gn.mvc.dto.BoardDto;
 import com.gn.mvc.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 @RequiredArgsConstructor
 public class BoardController {
+	
+	private Logger logger = LoggerFactory.getLogger(BoardController.class);
 	
 	// 1. 필드 주입 -> 순환 참조
 //	@Autowired
@@ -57,9 +60,15 @@ public class BoardController {
 		resultMap.put("res_code", "500");
 		resultMap.put("res_msg", "게시글 등록중 오류가 발생하였습니다.");
 		
-		System.out.println(dto);
+		
 		// Service가 가지고 있는 createBoard 메소드 호출
-		service.createBoard(dto);
+		BoardDto result = service.createBoard(dto);
+		
+		logger.debug("1 : "+result.toString());
+		logger.info("2 : "+result.toString());
+		logger.warn("3 : "+result.toString());
+		logger.error("4 : "+result.toString());
+		
 		
 		return resultMap;
 	}
