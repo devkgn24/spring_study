@@ -1,6 +1,7 @@
 package com.gn.mvc.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.gn.mvc.dto.BoardDto;
@@ -17,6 +18,10 @@ public class BoardService {
 //	BoardRepository repository;
 	
 	private final BoardRepository repository;
+	
+	public List<Board> selectBoardAll(){
+		return repository.findAll();
+	}
 	
 	public BoardDto createBoard(BoardDto dto) {
 		// 1. 매개변수 dto -> entity
