@@ -4,6 +4,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 layout:decorate="~{/include/layout}">
 	<th:block layout:fragment="content">	
 		<link th:href="@{/css/board/list.css}" rel="stylesheet">
+		<link th:href="@{/css/include/paging.css}" rel="stylesheet">
 		<section>
 		<div id="section_wrap">
 			<div class="word">
@@ -63,6 +64,24 @@ layout:decorate="~{/include/layout}">
 			<a style="border:1px solid black;" th:href="@{/board/create}">게시글 등록</a>
 		</div>
 		</section>	
+		<div class="center">
+			<div class="pagination">
+				<a th:if="${pageDto.prev}"
+					th:href="@{/board(nowPage=${pageDto.pageBarStart-1},search_type=${searchDto.search_type},search_text=${searchDto.search_text},order_type=${searchDto.order_type})}">
+					&laquo;
+				</a>
+				<a th:each="num : ${#numbers.sequence(pageDto.pageBarStart,pageDto.pageBarEnd)}"
+					th:text="${num}" class="page-link"
+					th:classappend="${pageDto.nowPage == num} ? 'active' "
+					th:href="@{/board(nowPage=${num},search_type=${searchDto.search_type},search_text=${searchDto.search_text},order_type=${searchDto.order_type})}">
+					번호
+				</a>
+				<a th:if="${pageDto.next}"
+					th:href="@{/board(nowPage=${pageDto.pageBarEnd+1},search_type=${searchDto.search_type},search_text=${searchDto.search_text},order_type=${searchDto.order_type})}">
+					&raquo;
+				</a>
+			</div>
+		</div>
 		<script>
 			document.getElementById('order_type').addEventListener('change',function(e){
 				const orderType = e.target.value;

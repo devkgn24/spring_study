@@ -1,12 +1,14 @@
 package com.gn.mvc.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.gn.mvc.dto.BoardDto;
+import com.gn.mvc.dto.PageDto;
 import com.gn.mvc.dto.SearchDto;
 import com.gn.mvc.entity.Board;
 import com.gn.mvc.repository.BoardRepository;
@@ -23,7 +25,25 @@ public class BoardService {
 	
 	private final BoardRepository repository;
 	
-	public List<Board> selectBoardAll(SearchDto searchDto){
+	public Page<Board> selectBoardAll(SearchDto searchDto, PageDto pageDto){
+		
+		Pageable pageable = PageRequest.of(pageDto.getNowPage()-1, pageDto.getNumPerPage(), Sort.by("regDate").descending());
+		if(searchDto.getOrder_type() == 2) {
+			pageable = PageRequest.of(pageDto.getNowPage()-1, pageDto.getNumPerPage(), Sort.by("regDate").ascending());
+		}
+		
+		Specification<Board> spec = (root,query,criteriaBuilder) -> null; 
+		if(searchDto.getSearch_type() == 1) {
+			spec = spec.and(BoardSpecification.boardTitleContains(searchDto.getSearch_text()));
+		} else if(searchDto.getSearch_type() == 2) {
+			spec = spec.and(BoardSpecification.boardContentContains(searchDto.getSearch_text()));
+		} else if(searchDto.getSearch_type() == 3) {
+			spec = spec.and(BoardSpecification.boardTitleContains(searchDto.getSearch_text()))
+					.or(BoardSpecification.boardContentContains(searchDto.getSearch_text()));
+		}
+		Page<Board> list = repository.findAll(spec,pageable);
+		return list;
+		
 //		List<Board> list = new ArrayList<Board>();
 //		if(searchDto.getSearch_type() == 1) {
 //			// 제목 기준으로 검색
@@ -42,22 +62,10 @@ public class BoardService {
 //		}
 //		return list;
 		
-		Sort sort = Sort.by("regDate").descending();
-		if(searchDto.getOrder_type() == 2) {
-			sort = Sort.by("regDate").ascending();
-		}
-		Specification<Board> spec = (root,query,criteriaBuilder) -> null; 
-		if(searchDto.getSearch_type() == 1) {
-			spec = spec.and(BoardSpecification.boardTitleContains(searchDto.getSearch_text()));
-		} else if(searchDto.getSearch_type() == 2) {
-			spec = spec.and(BoardSpecification.boardContentContains(searchDto.getSearch_text()));
-		} else if(searchDto.getSearch_type() == 3) {
-			spec = spec.and(BoardSpecification.boardTitleContains(searchDto.getSearch_text()))
-					.or(BoardSpecification.boardContentContains(searchDto.getSearch_text()));
-		}
-		List<Board> list = repository.findAll(spec,sort);
-		return list;
-		
+//		Sort sort = Sort.by("regDate").descending();
+//		if(searchDto.getOrder_type() == 2) {
+//			sort = Sort.by("regDate").ascending();
+//		}
 	}
 	
 	public BoardDto createBoard(BoardDto dto) {
