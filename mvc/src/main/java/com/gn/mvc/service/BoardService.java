@@ -25,6 +25,35 @@ public class BoardService {
 	
 	private final BoardRepository repository;
 	
+	public int deleteBoard(Long id) {
+		int result = 0;
+		try {
+			Board target = repository.findById(id).orElse(null);
+			if(target != null) {
+				repository.deleteById(id);
+			}
+			result = 1; 
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public Board updateBoard(BoardDto param) {
+		Board result = null;
+		// 1. @Id를 쓴 필드를 기준으로 타겟 조회
+		Board target = repository.findById(param.getBoard_no()).orElse(null);
+		// 2. 타겟이 존재하는 경우 업데이트
+		if(target != null) {
+			result = repository.save(param.toEntity());
+		}
+		return result;
+	}
+	
+	public Board selectBoardOne(Long id) {
+		return repository.findById(id).orElse(null);
+	}
+	
 	public Page<Board> selectBoardAll(SearchDto searchDto, PageDto pageDto){
 		
 		Pageable pageable = PageRequest.of(pageDto.getNowPage()-1, pageDto.getNumPerPage(), Sort.by("regDate").descending());

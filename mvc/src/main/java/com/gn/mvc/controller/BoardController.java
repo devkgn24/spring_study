@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -99,8 +101,56 @@ public class BoardController {
 	}
 	
 	
+	@GetMapping("/board/{id}")
+	public String slectBoardOne(@PathVariable("id") Long id,Model model) {
+		logger.info("게시글 단일 조회 : "+id);
+		Board result = service.selectBoardOne(id);
+		model.addAttribute("board", result);
+		return "board/detail";
+	}
 	
 	
+	@GetMapping("/board/{id}/update")
+	public String updateBoardView(@PathVariable("id") Long id,Model model) {
+		Board board = service.selectBoardOne(id);
+		model.addAttribute("board",board);
+		return "board/update";
+	}
+	
+	@PostMapping("/board/{id}/update")
+	@ResponseBody
+	public Map<String,String> updateBoardApi(BoardDto param) {
+		Map<String,String> resultMap = new HashMap<String,String>();
+		resultMap.put("res_code", "500");
+		resultMap.put("res_msg", "게시글 수정중 오류가 발생했습니다.");
+		
+		// 1. BoardDto 출력(전달 확인)
+		logger.debug(param.toString());
+		// 2. BoardService -> BoardRepository 게시글 수정
+		Board saved = service.updateBoard(param);
+		// 3. 수정 결과 Entity가 null이 아니면 성공 그외에는 실패
+		if(saved != null) {
+			resultMap.put("res_code", "200");
+			resultMap.put("res_msg", "게시글이 수정되었습니다.");
+		}
+		return resultMap;
+	}
+	
+	@DeleteMapping("/board/{id}")
+	@ResponseBody
+	public Map<String,String> deleteBoardApi(
+			@PathVariable("id") Long id){
+		Map<String,String> resultMap = new HashMap<String,String>();
+		resultMap.put("res_code", "500");
+		resultMap.put("res_msg", "게시글 삭제중 오류가 발생했습니다.");
+		
+		int result = service.deleteBoard(id);
+		if(result > 0) {
+			resultMap.put("res_code", "200");
+			resultMap.put("res_msg", "게시글이 삭제되었습니다.");
+		}
+		return resultMap;
+	}
 	
 	
 	
