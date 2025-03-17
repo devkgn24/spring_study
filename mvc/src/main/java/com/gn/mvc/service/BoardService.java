@@ -1,8 +1,8 @@
 package com.gn.mvc.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -42,8 +42,11 @@ public class BoardService {
 //		}
 //		return list;
 		
+		Sort sort = Sort.by("regDate").descending();
+		if(searchDto.getOrder_type() == 2) {
+			sort = Sort.by("regDate").ascending();
+		}
 		Specification<Board> spec = (root,query,criteriaBuilder) -> null; 
-		
 		if(searchDto.getSearch_type() == 1) {
 			spec = spec.and(BoardSpecification.boardTitleContains(searchDto.getSearch_text()));
 		} else if(searchDto.getSearch_type() == 2) {
@@ -51,9 +54,8 @@ public class BoardService {
 		} else if(searchDto.getSearch_type() == 3) {
 			spec = spec.and(BoardSpecification.boardTitleContains(searchDto.getSearch_text()))
 					.or(BoardSpecification.boardContentContains(searchDto.getSearch_text()));
-
 		}
-		List<Board> list = repository.findAll(spec);
+		List<Board> list = repository.findAll(spec,sort);
 		return list;
 		
 	}
