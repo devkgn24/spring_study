@@ -28,6 +28,10 @@ public class AttachService {
 	private final BoardRepository boardRepository;
 	private final AttachRepository attachRepository;
 	
+	public Attach selectAttachOne(Long id) {
+		return attachRepository.findById(id).orElse(null);
+	}
+	
 	public List<Attach> selectAttachList(Long boardNo){
 		// 1. boardNo 기준 Board 엔티티 조회
 		Board board = boardRepository.findById(boardNo).orElse(null);
