@@ -1,6 +1,8 @@
 package com.gn.mvc.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -15,9 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gn.mvc.dto.AttachDto;
 import com.gn.mvc.dto.BoardDto;
 import com.gn.mvc.dto.PageDto;
 import com.gn.mvc.dto.SearchDto;
+import com.gn.mvc.entity.Attach;
 import com.gn.mvc.entity.Board;
 import com.gn.mvc.service.AttachService;
 import com.gn.mvc.service.BoardService;
@@ -70,8 +74,19 @@ public class BoardController {
 		resultMap.put("res_code", "500");
 		resultMap.put("res_msg", "게시글 등록중 오류가 발생하였습니다.");
 		
+		List<AttachDto> attachDtoList = new ArrayList<AttachDto>();
+		
 		for(MultipartFile mf : dto.getFiles()) {
-			attachService.uploadFile(mf);
+			AttachDto attachDto = attachService.uploadFile(mf);
+			if(attachDto != null) attachDtoList.add(attachDto);
+		}
+		
+		if(dto.getFiles().size() == attachDtoList.size()) {
+			int result = service.createBoard(dto,attachDtoList);
+			if(result > 0) {
+				resultMap.put("res_code", "200");
+				resultMap.put("res_msg", "게시글이 등록되었습니다.");
+			}
 		}
 		
 		// Service가 가지고 있는 createBoard 메소드 호출
@@ -106,6 +121,9 @@ public class BoardController {
 		logger.info("게시글 단일 조회 : "+id);
 		Board result = service.selectBoardOne(id);
 		model.addAttribute("board", result);
+		
+		List<Attach> attachList = attachService.selectAttachList(id);
+		model.addAttribute("attachList", attachList);
 		return "board/detail";
 	}
 	
