@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.gn.mvc.dto.BoardDto;
 import com.gn.mvc.dto.PageDto;
 import com.gn.mvc.dto.SearchDto;
 import com.gn.mvc.entity.Board;
+import com.gn.mvc.service.AttachService;
 import com.gn.mvc.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -42,6 +44,7 @@ public class BoardController {
 	
 	// 3. 생성자 주입 + final
 	private final BoardService service;
+	private final AttachService attachService;
 	
 //	@Autowired
 //	public BoardController(BoardService service) {
@@ -67,15 +70,12 @@ public class BoardController {
 		resultMap.put("res_code", "500");
 		resultMap.put("res_msg", "게시글 등록중 오류가 발생하였습니다.");
 		
+		for(MultipartFile mf : dto.getFiles()) {
+			attachService.uploadFile(mf);
+		}
 		
 		// Service가 가지고 있는 createBoard 메소드 호출
-		BoardDto result = service.createBoard(dto);
-		
-		logger.debug("1 : "+result.toString());
-		logger.info("2 : "+result.toString());
-		logger.warn("3 : "+result.toString());
-		logger.error("4 : "+result.toString());
-		
+		// BoardDto result = service.createBoard(dto);
 		
 		return resultMap;
 	}
