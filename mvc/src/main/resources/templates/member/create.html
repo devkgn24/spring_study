@@ -53,7 +53,7 @@ layout:decorate="~{/include/layout}">
 				// 2. 회원정보 등록
 				if(vali_check == true){
 					const payload = new FormData(form);
-					fetch("/member",{
+					fetch("/signup",{
 						method : 'post',
 						body : payload
 					})
