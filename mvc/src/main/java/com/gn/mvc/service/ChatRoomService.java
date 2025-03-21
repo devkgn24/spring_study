@@ -20,6 +20,10 @@ public class ChatRoomService {
 	
 	private final ChatRoomRepository repository;
 	
+	public ChatRoom selectChatRoomOne(Long id) {
+		return repository.findById(id).orElse(null);
+	}
+	
 	public List<ChatRoom> selectChatRoomAll(){
 		Authentication authentication 
 			= SecurityContextHolder.getContext().getAuthentication();
