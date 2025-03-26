@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>홈화면</title>
+</head>
+<body>
+	<h1>할 일 목록</h1>
+	<form>
+		<label for="search_text">내용 : </label>
+		<input type="text" id="search_text">
+		<input type="submit" value="검색">
+	</form>
+	<br>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>완료</th>
+				<th>번호</th>
+				<th>내용</th>
+				<th>삭제</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<input type="checkbox">
+				</td>
+				<td>
+					1
+				</td>
+				<td>
+					연차 결재 올리기
+				</td>
+				<td>
+					<input type="button" value="삭제">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div>
+		<a href="#">&laquo;</a>
+		<a href="#">1</a>
+		<a href="#">2</a>
+		<a href="#">3</a>
+		<a href="#">4</a>
+		<a href="#">5</a>
+		<a href="#">&raquo;</a>
+	</div>
+	<h1>할 일 추가</h1>
+	<form name="create_todo_form">
+		<input type="text" name="content">
+		<input type="submit" value="추가하기">
+	</form>
+	<script>
+		const todoCreateFrm = document.create_todo_form;
+		todoCreateFrm.addEventListener("submit",function(e){
+			e.preventDefault();
+			if(todoCreateFrm.content.value == ''){
+				alert('할 일 내용을 반드시 입력하세요');
+			}else{
+				const payload = new FormData(todoCreateFrm);
+				fetch("/todo/create",{
+					method:"post",
+					body : payload
+				})
+				.then(response => response.json())
+				.then(data => {
+					console.log(data);
+				});
+				
+			}
+		});
+	</script>
+</body>
+</html>
