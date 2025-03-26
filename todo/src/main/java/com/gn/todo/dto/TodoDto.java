@@ -21,8 +21,17 @@ public class TodoDto {
 	private String content;
 	private String flag = "N";
 	
+	public TodoDto toDto(Todo target) {
+			return TodoDto.builder()
+			.no(target.getNo())
+			.content(target.getContent())
+			.flag(target.getFlag())
+			.build();
+	}
+	
 	public Todo toEntity() {
 		return Todo.builder()
+				.no(no)
 				.content(content)
 				.flag(flag)
 				.build();

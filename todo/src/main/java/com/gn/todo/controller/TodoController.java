@@ -43,6 +43,11 @@ public class TodoController {
 		resultMap.put("res_code", "500");
 		resultMap.put("res_msg", "삭제 실패");
 		
+		int result = todoService.deleteTodoOne(id);
+		if(result > 0) {
+			resultMap.put("res_code", "200");
+			resultMap.put("res_msg", "삭제 성공");
+		}
 		
 		return resultMap;
 	}
