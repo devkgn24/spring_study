@@ -3,6 +3,7 @@ package com.gn.mvc;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -21,5 +22,16 @@ public class MvcApplication implements WebMvcConfigurer{
 		registry.addResourceHandler("/uploads/**")
 			.addResourceLocations("file:///"+fileDir);
 	}
+	
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new CustomInterceptor())
+        						.addPathPatterns("/project/**")
+        						.excludePathPatterns("/error",
+        								"/login","/signup","/logout","/",
+        								"/css/**","/img/**","/js/**",
+        								"/favicon.ico");
+    }
+
 
 }
